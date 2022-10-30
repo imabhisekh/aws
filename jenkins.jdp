@@ -4,7 +4,7 @@ node {
                 echo 'this is my story'
                         }
         stage('git pull'){
-            git url
+              https://github.com/imabhisekh/aws.git
                          }  
         stage('test'){
                 echo 'sunrise in the morning'
