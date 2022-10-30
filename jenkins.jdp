@@ -5,7 +5,7 @@ node {
                         }
         stage('git pull'){
               https://github.com/imabhisekh/aws.git
-                       }  
+                           }  
         stage('test'){
                 echo 'sunrise in the morning'
                     }    
