@@ -1,1 +1,15 @@
+node {
 
+        stage('Build') {
+                echo 'this is my story'
+                        }
+        stage('git-pull'){
+            git url
+                         }  
+        stage('test'){
+                echo 'sunrise in the morning'
+                      }    
+        stage('deploy')  {
+               echo 'good night'
+                         }    
+     }
