@@ -3,7 +3,7 @@ node {
         stage('Build') {
                 echo 'this is my story'
                         }
-        stage('git-pull'){
+        stage('gitpull'){
             git url
                          }  
         stage('test'){
