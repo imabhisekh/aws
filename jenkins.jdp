@@ -1,16 +1,13 @@
 node {
 
-        stage('Build') {
-                echo 'this is my story'
+        stage('Build1') {
+                echo 'creating decorative pipeline'
                         }
         stage('git pull'){
               https://github.com/imabhisekh/aws.git
                         
-        stage('test'){
-                echo 'sunrise in the morning'
+        stage('build3'){
+                echo 'succesfully fatch data'
                     }    
-        stage('deploy')  {
-               echo 'good night'
-                        } 
         }                
  }
