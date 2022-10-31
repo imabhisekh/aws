@@ -1,0 +1,24 @@
+pipeline {
+    agent {
+        node {
+         label 'redlabel'
+    }
+}
+      stages {
+        stage('Build1') {
+            steps {
+                echo 'creating decorative pipeline'
+                        }
+               }
+          stage('build2'){
+              steps {
+              git branch: 'main', url: 'https://github.com/imabhisekh/aws.git'
+          }
+       } 
+            stage('build3'){
+                steps {
+                echo 'succesfully fatch data'
+                  } 
+            }   
+      } 
+} 
