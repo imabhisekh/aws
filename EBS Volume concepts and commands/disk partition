@@ -1,0 +1,76 @@
+* in linux we increase and decrease logical volume (lvm) and virtual disk optimizer (vdo)
+Q. if i want to share my file from one country to another i will choose EFS and S3 via Replication .
+
+Some Basics 
+In aws ebs  for 33.33 GB of data we get 100 IOPS  (Input Output Per Second)
+Toatal IOPS will Be 3000 in aws .
+what exactly means of IOPS :- Its data READ, WRITE capacity.
+for per 1 GB 3 IOPS will be provided 
+If i have 500 GB it will 1500 IOPS
+
+So we have COMMANDS for partition management or we say to mount umount of filesystem or volume in our servers .
+# lsblk    ---> to check details of root volume.
+# fdisk -l  ---> fully details of volumes 
+# df -h    --->  for check volume will mount or not
+# mkfs  ---> Its for make filesystem or to formate (so basucally we use when we first mount disk and once we mount we dont need to again formate that volume)
+ so to use formate or making filesystem below example  ext4 is a file type, and /dev/xvdf is device file of that volume (so we need to go in dev directory for execute the command)
+ eg. mkfs.ext4   /dev/xvdf
+ # blkid  ---> to check weather it is formate or not 
+ And we have two things 1) Temporary Mounting (when you stop and start it will disappear) 2)p Permanent Mounting
+ 
+ So for permanent mounting we need to change in kernel file called FSTAB and it has multiple filleds where we need to add (DevicePath/UUID, Dir, FileType, Default, 0, 0)
+ and you need to update kernel #mount -a 
+ # resize2fs  device path(/dev/xvdf ---> used wen you modify your volume or we can only INCREASE VOLUME . it shouldnt use for decrease volume that has diffrent method.
+ #rsync   -aHAXxSP   <old dir>   <new dir>  --->  data syncronise basically used to DECREASE VOLUME.
+
+IMOPRTANT THINGS TO DO WHILE MOUNTING AND UNMOUNTING
+
+* alway deattach volume first from cli and then from console ,
+* at a same time we can only attach ebs volume to only ONE INSTANCE .
+* In EFS we can attach multiple volumes .
+* we cannot reduce volume size from current running volume.
+* if i want to reduse volume size of an instance first i need create that size of volume and and attach the volume to taht instace  now formate that and
+   do permanet mounting then (syncronise that data ) rsync <olddir> <newdir>  and no deatcah that privious volume. 
+* we use EBS SNAPSHOT for mainly backup purpose.
+* if you want to attach your volume from one AZ to another AZ you have to take snapshot of that volume and  from that snapshot create new volume and choose another AZ .
+
+SOME SCENARIOS
+
+1) I want to increase my volume before i have 8 GB now i have to make 18 GB
+> we need to create volume of 18 GB
+>  from console select that volume and attach to that instance 
+> in cli  #lsblk now we have to add data in xvdf so we need to formate and mount in a directory .
+> # mkfs.ext4 /dev/xvdf 
+> now make directory to mount data 
+>( now we have to mount in directory for temprory mount /dev/xvdf /mydata
+> for permanent mount go fstab file (vim /etc/fstab) /dev/xvdf fileext /dir defaults 0 0 )
+
+
+2) now we have to add volume of 30 GB in that (it has privious data taht need to be shown )
+> now go to volume section in that select that volume and modify add 30 gb 
+remember in console it is showing 30 gb but in cli actual not showing in that dir .
+>go cli  # resize2fs /dev/xvdf
+
+
+3) now remove that volume from inst1 and add that volume to inst2 on same AZ
+  > go to volume and try to attach but option not shown so we have to deattach that volume from inst1
+  > go to cli of inst1 and type umount /dirname it will deattach and now from console deattach 
+  > then select that volume and clich to attach to inst2 
+  > in inst2 cli   #mkdir /mydata  then # mount /dev/xvdf /mydata   so last content will be show to inst2 in that dir .
+  
+  
+  4) now inst2 in diff AVAILABILITY ZONE  attach that volume into that
+   for best practice deattach volume from inst1  umount /dirname 
+  > go to volume and take  snapshot and from that snapshot create new volume in inst2 AZ
+  > attach that volume to inst2
+  >inst2 cli mkdir /dirname   mount /dev/xvdf  /dirname last data will be given .
+  
+  5)now i have to decrease 5GB from 30GB volume.
+  >  create new volume 5GB attach that volume  to instance 
+  > now formate using mkfs .ext3 /dev/xvdg that new volume 
+  > create dir to mount
+  > do permanent mount vim /etc/fstab  /dev/xvdg ext.3 /dirname default 0 0
+  > mount -a update kernel 
+  >rsync -aHAXxSP    <old dir>   <newdir>
+  > now unmount volume of 30 GB and  deatach from console ..
+  
